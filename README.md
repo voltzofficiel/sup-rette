@@ -21,6 +21,7 @@ Supérette moderne pour ESX avec interface NUI stylisée, catégories de produit
 ## Configuration
 - Les points de vente, catégories et prix se trouvent dans `config.lua`.
 - Modifiez `Config.MaxPurchase` pour ajuster la quantité maximale achetable par action.
+- Configurez `Config.Blips` pour choisir entre un seul blip global ou un blip par magasin.
 - Les zones cibles peuvent être rechargées en jeu avec la commande `/forcesuperette` (touche par défaut : `END`).
 
 ## Crédits

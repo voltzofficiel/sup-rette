@@ -139,18 +139,31 @@ local function removeTargets()
 end
 
 local function createBlips()
-    for i, shop in ipairs(Config.Shops) do
-        local blip = AddBlipForCoord(shop.coords.x, shop.coords.y, shop.coords.z)
+    if not Config.Blips.enabled then return end
 
-        SetBlipSprite(blip, 52)
-        SetBlipScale(blip, 0.75)
-        SetBlipColour(blip, 2)
+    local function createBlip(coords, label)
+        local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+
+        SetBlipSprite(blip, Config.Blips.sprite or 52)
+        SetBlipScale(blip, Config.Blips.scale or 0.75)
+        SetBlipColour(blip, Config.Blips.colour or 2)
         SetBlipAsShortRange(blip, true)
         BeginTextCommandSetBlipName('STRING')
-        AddTextComponentString(('Supérette #%d'):format(i))
+        AddTextComponentString(label)
         EndTextCommandSetBlipName(blip)
 
         blips[#blips + 1] = blip
+    end
+
+    if Config.Blips.single then
+        local coords = Config.Blips.coords or (Config.Shops[1] and Config.Shops[1].coords)
+        if coords then
+            createBlip(coords, Config.Blips.label or 'Supérette')
+        end
+    else
+        for i, shop in ipairs(Config.Shops) do
+            createBlip(shop.coords, ('Supérette #%d'):format(i))
+        end
     end
 end
 

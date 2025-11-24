@@ -8,6 +8,16 @@ Config.Target = {
     label = 'Parler au caissier'
 }
 
+Config.Blips = {
+    enabled = true,
+    single = true,
+    sprite = 52,
+    scale = 0.75,
+    colour = 2,
+    label = 'Supérette',
+    coords = nil -- laissez à nil pour utiliser le premier shop ou indiquez vec3(x, y, z)
+}
+
 Config.Shops = {
     { coords = vec3(24.44, -1346.04, 29.5) },
     { coords = vec3(-47.3, -1759.99, 29.42) },

@@ -36,12 +36,7 @@ RegisterNetEvent('sup-rette:buyItem', function(itemName, quantity, categoryLabel
         return
     end
 
-    local removed = xPlayer.removeMoney(price)
-
-    if not removed then
-        TriggerClientEvent('sup-rette:notify', src, 'Impossible de retirer l\'argent.', 'error')
-        return
-    end
+    xPlayer.removeMoney(price)
 
     local added = ox_inventory:AddItem(src, item.name, qty)
 
