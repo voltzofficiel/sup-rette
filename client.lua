@@ -3,6 +3,7 @@ local ox_inventory = exports.ox_inventory
 local isOpen = false
 local currentShop = nil
 local targetIds = {}
+local blips = {}
 
 local function findItem(itemName)
     for _, category in ipairs(Config.Categories) do
@@ -137,14 +138,39 @@ local function removeTargets()
     targetIds = {}
 end
 
+local function createBlips()
+    for i, shop in ipairs(Config.Shops) do
+        local blip = AddBlipForCoord(shop.coords.x, shop.coords.y, shop.coords.z)
+
+        SetBlipSprite(blip, 52)
+        SetBlipScale(blip, 0.75)
+        SetBlipColour(blip, 2)
+        SetBlipAsShortRange(blip, true)
+        BeginTextCommandSetBlipName('STRING')
+        AddTextComponentString(('Supérette #%d'):format(i))
+        EndTextCommandSetBlipName(blip)
+
+        blips[#blips + 1] = blip
+    end
+end
+
+local function removeBlips()
+    for _, blip in ipairs(blips) do
+        RemoveBlip(blip)
+    end
+    blips = {}
+end
+
 AddEventHandler('onResourceStart', function(resName)
     if resName ~= GetCurrentResourceName() then return end
     createTargets()
+    createBlips()
 end)
 
 AddEventHandler('onResourceStop', function(resName)
     if resName ~= GetCurrentResourceName() then return end
     removeTargets()
+    removeBlips()
     closeShop()
 end)
 

@@ -1,3 +1,4 @@
+local ESX = exports['es_extended']:getSharedObject()
 local ox_inventory = exports.ox_inventory
 
 local function findItem(itemName)
@@ -21,23 +22,23 @@ RegisterNetEvent('sup-rette:buyItem', function(itemName, quantity, categoryLabel
 
     local oxItem = ox_inventory:Items(item.name)
 
-    if not oxItem then
-        TriggerClientEvent('sup-rette:notify', src, 'Article indisponible dans ox_inventory.', 'error')
+    local qty = math.max(1, math.min(tonumber(quantity) or 1, Config.MaxPurchase))
+    local price = item.price * qty
+
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if not xPlayer then
+        TriggerClientEvent('sup-rette:notify', src, 'Joueur introuvable.', 'error')
         return
     end
 
-    local qty = math.max(1, math.min(tonumber(quantity) or 1, Config.MaxPurchase))
-    local price = item.price * qty
-    local cash = ox_inventory:Search(src, 'count', 'money') or 0
-
-    if cash < price then
+    if xPlayer.getMoney() < price then
         TriggerClientEvent('sup-rette:notify', src, 'Fonds insuffisants.', 'error')
         return
     end
 
-    local removed = ox_inventory:RemoveItem(src, 'money', price)
+    local removed = xPlayer.removeMoney(price)
 
-    if not removed or removed < price then
+    if not removed then
         TriggerClientEvent('sup-rette:notify', src, 'Impossible de retirer l\'argent.', 'error')
         return
     end
@@ -45,12 +46,12 @@ RegisterNetEvent('sup-rette:buyItem', function(itemName, quantity, categoryLabel
     local added = ox_inventory:AddItem(src, item.name, qty)
 
     if not added then
-        ox_inventory:AddItem(src, 'money', price)
+        xPlayer.addMoney(price)
         TriggerClientEvent('sup-rette:notify', src, 'Inventaire plein.', 'error')
         return
     end
 
-    local label = (oxItem.label or item.label) or item.name
+    local label = (oxItem and oxItem.label or item.label) or item.name
 
     local categoryText = categoryLabel and (' (' .. categoryLabel .. ')') or ''
     TriggerClientEvent('sup-rette:notify', src, ('Achat de %s x%d%s réussi pour $%d.'):format(label, qty, categoryText, price), 'success')
