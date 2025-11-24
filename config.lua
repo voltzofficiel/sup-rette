@@ -15,6 +15,9 @@ Config.Blips = {
     scale = 0.75,
     colour = 2,
     label = 'Supérette',
+    shortLabel = '24/7',
+    maxLabelLength = 12,
+    showIndex = false,
     coords = nil -- laissez à nil pour utiliser le premier shop ou indiquez vec3(x, y, z)
 }
 

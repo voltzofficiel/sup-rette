@@ -141,6 +141,21 @@ end
 local function createBlips()
     if not Config.Blips.enabled then return end
 
+    local function formatLabel(label, index)
+        local text = label or 'Supérette'
+
+        if not Config.Blips.single and Config.Blips.showIndex and index then
+            text = ('%s #%d'):format(text, index)
+        end
+
+        local maxLength = Config.Blips.maxLabelLength
+        if maxLength and maxLength > 0 and #text > maxLength then
+            text = text:sub(1, maxLength)
+        end
+
+        return text
+    end
+
     local function createBlip(coords, label)
         local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
 
@@ -158,11 +173,12 @@ local function createBlips()
     if Config.Blips.single then
         local coords = Config.Blips.coords or (Config.Shops[1] and Config.Shops[1].coords)
         if coords then
-            createBlip(coords, Config.Blips.label or 'Supérette')
+            createBlip(coords, formatLabel(Config.Blips.label))
         end
     else
+        local baseLabel = Config.Blips.shortLabel or Config.Blips.label or 'Supérette'
         for i, shop in ipairs(Config.Shops) do
-            createBlip(shop.coords, ('Supérette #%d'):format(i))
+            createBlip(shop.coords, formatLabel(baseLabel, i))
         end
     end
 end
