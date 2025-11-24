@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supérette Lumi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="backdrop" class="hidden"></div>
+    <main id="app" class="hidden">
+        <header class="topbar">
+            <div class="brand">
+                <div class="dot"></div>
+                <div class="meta">
+                    <p class="eyebrow">24/7 sélection</p>
+                    <h1>Supérette Lumi</h1>
+                </div>
+            </div>
+            <button id="close" aria-label="Fermer">
+                <span aria-hidden="true">✕</span>
+            </button>
+        </header>
+
+        <section class="hero">
+            <div class="copy">
+                <p class="eyebrow">Caisse connectée</p>
+                <h2>Des essentiels prêts à emporter</h2>
+                <p class="sub">Parcourez nos catégories modernes avec un visuel inspiré des néons urbains. Les caissiers reconnaissent directement votre commande.</p>
+            </div>
+            <div class="pill" id="shop-pill">
+                <span class="ping"></span>
+                <span class="text">Magasin <span id="shop-id">01</span></span>
+            </div>
+        </section>
+
+        <section class="panel">
+            <aside class="categories" id="categories"></aside>
+            <div class="products">
+                <div class="grid" id="products"></div>
+            </div>
+        </section>
+    </main>
+
+    <template id="category-template">
+        <button class="category">
+            <span class="icon"></span>
+            <div class="meta">
+                <p class="label"></p>
+                <p class="hint">Voir les produits</p>
+            </div>
+        </button>
+    </template>
+
+    <template id="product-template">
+        <article class="card">
+            <div class="thumb">
+                <img alt="" loading="lazy">
+                <div class="price"></div>
+            </div>
+            <div class="content">
+                <div>
+                    <h3 class="title"></h3>
+                    <p class="badge"></p>
+                </div>
+                <div class="actions">
+                    <input type="number" min="1" value="1">
+                    <button class="primary">Ajouter</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>
