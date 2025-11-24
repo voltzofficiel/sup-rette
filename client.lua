@@ -1,4 +1,5 @@
 local ESX = exports['es_extended']:getSharedObject()
+local ox_inventory = exports.ox_inventory
 local isOpen = false
 local currentShop = nil
 local targetIds = {}
@@ -16,9 +17,44 @@ end
 local function openShop(shopId)
     if isOpen then return end
 
+    local categories = {}
+
+    for _, category in ipairs(Config.Categories) do
+        local items = {}
+
+        for _, item in ipairs(category.items) do
+            local oxItem = ox_inventory:Items(item.name)
+            local imageName = oxItem and (oxItem.image or (oxItem.client and oxItem.client.image))
+            local imagePath
+
+            if imageName then
+                imagePath = ('nui://ox_inventory/web/images/%s'):format(imageName)
+            elseif item.image and (item.image:find('^https?://') or item.image:find('^nui://')) then
+                imagePath = item.image
+            else
+                imagePath = ('nui://ox_inventory/web/images/%s.png'):format(item.name)
+            end
+
+            items[#items + 1] = {
+                name = item.name,
+                label = item.label,
+                price = item.price,
+                image = imagePath
+            }
+        end
+
+        categories[#categories + 1] = {
+            name = category.name,
+            label = category.label,
+            color = category.color,
+            icon = category.icon,
+            items = items
+        }
+    end
+
     local payload = {
         action = 'open',
-        categories = Config.Categories,
+        categories = categories,
         shop = shopId
     }
 

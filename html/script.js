@@ -64,8 +64,12 @@ function renderProducts() {
         const input = node.querySelector('input');
         const addBtn = node.querySelector('button');
 
-        img.src = `assets/${item.image || 'placeholder.svg'}`;
+        img.src = item.image || 'assets/placeholder.svg';
         img.alt = item.label;
+        img.onerror = () => {
+            img.onerror = null;
+            img.src = 'assets/placeholder.svg';
+        };
         price.textContent = `$${item.price}`;
         title.textContent = item.label;
         badge.textContent = category.label;
