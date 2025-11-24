@@ -1,4 +1,4 @@
-local ESX = exports['es_extended']:getSharedObject()
+local ox_inventory = exports.ox_inventory
 
 local function findItem(itemName)
     for _, category in ipairs(Config.Categories) do
@@ -12,9 +12,6 @@ end
 
 RegisterNetEvent('sup-rette:buyItem', function(itemName, quantity, categoryLabel)
     local src = source
-    local xPlayer = ESX.GetPlayerFromId(src)
-
-    if not xPlayer then return end
 
     local item = findItem(itemName)
     if not item then
@@ -22,17 +19,38 @@ RegisterNetEvent('sup-rette:buyItem', function(itemName, quantity, categoryLabel
         return
     end
 
+    local oxItem = ox_inventory:Items(item.name)
+
+    if not oxItem then
+        TriggerClientEvent('sup-rette:notify', src, 'Article indisponible dans ox_inventory.', 'error')
+        return
+    end
+
     local qty = math.max(1, math.min(tonumber(quantity) or 1, Config.MaxPurchase))
     local price = item.price * qty
+    local cash = ox_inventory:Search(src, 'count', 'money') or 0
 
-    if xPlayer.getMoney() < price then
+    if cash < price then
         TriggerClientEvent('sup-rette:notify', src, 'Fonds insuffisants.', 'error')
         return
     end
 
-    local label = item.label or item.name
-    xPlayer.removeMoney(price)
-    xPlayer.addInventoryItem(item.name, qty)
+    local removed = ox_inventory:RemoveItem(src, 'money', price)
+
+    if not removed or removed < price then
+        TriggerClientEvent('sup-rette:notify', src, 'Impossible de retirer l\'argent.', 'error')
+        return
+    end
+
+    local added = ox_inventory:AddItem(src, item.name, qty)
+
+    if not added then
+        ox_inventory:AddItem(src, 'money', price)
+        TriggerClientEvent('sup-rette:notify', src, 'Inventaire plein.', 'error')
+        return
+    end
+
+    local label = (oxItem.label or item.label) or item.name
 
     local categoryText = categoryLabel and (' (' .. categoryLabel .. ')') or ''
     TriggerClientEvent('sup-rette:notify', src, ('Achat de %s x%d%s réussi pour $%d.'):format(label, qty, categoryText, price), 'success')
